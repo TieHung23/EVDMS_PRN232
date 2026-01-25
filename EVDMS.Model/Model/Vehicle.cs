@@ -4,7 +4,7 @@ namespace EVDMS.Core.Model;
 
 public class Vehicle : TIdentity<Guid>, ICreatable, IModifiable, IStatus
 {
-    protected Vehicle()
+    public Vehicle()
     {
 
     }

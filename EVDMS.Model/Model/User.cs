@@ -4,7 +4,7 @@ namespace EVDMS.Core.Model;
 
 public class User : TIdentity<Guid>, ICreatable, IModifiable, IStatus
 {
-    protected User()
+    public User()
     {
 
     }

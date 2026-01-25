@@ -7,10 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Dto\Request\" />
-      <Folder Include="Helper\" />
       <Folder Include="Service\Abstraction\" />
       <Folder Include="Service\Implement\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\EVDMS.DataAccessLayer\EVDMS.DataAccessLayer.csproj" />
     </ItemGroup>
 
 </Project>
