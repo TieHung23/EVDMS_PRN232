@@ -19,6 +19,9 @@ public class Config : TIdentity<Guid>, ICreatable, IModifiable, IStatus
 
     public string Description { get; set; } = string.Empty;
 
+    public Guid VehicleId { get; set; }
+    public Vehicle? Vehicle { get; set; } = null!;
+
     public required DateTime CreatedAt { get; set; }
     public required string CreatedAtTick { get; set; }
     public required string CreatedBy { get; set; }

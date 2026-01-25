@@ -4,13 +4,16 @@
         <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Dto\Request\" />
-      <Folder Include="Helper\" />
       <Folder Include="Service\Abstraction\" />
       <Folder Include="Service\Implement\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\EVDMS.DataAccessLayer\EVDMS.DataAccessLayer.csproj" />
     </ItemGroup>
 
 </Project>

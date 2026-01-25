@@ -4,7 +4,7 @@ namespace EVDMS.Core.Model;
 
 public class Vehicle : TIdentity<Guid>, ICreatable, IModifiable, IStatus
 {
-    protected Vehicle()
+    public Vehicle()
     {
 
     }
@@ -25,6 +25,8 @@ public class Vehicle : TIdentity<Guid>, ICreatable, IModifiable, IStatus
     public string VehicleType { get; set; } = string.Empty;
 
     public string Description { get; set; } = string.Empty;
+
+    public ICollection<Config> Configs { get; set; } = new List<Config>();
 
     public int ReleaseYear { get; set; }
 

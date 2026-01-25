@@ -11,11 +11,8 @@ public class Inventory : TIdentity<Guid>, ICreatable, IModifiable, IStatus
 
     public Guid DealerId { get; set; }
     public Guid VehicleId { get; set; }
-
     public Vehicle? Vehicle { get; set; }
-
     public Dealer? Dealer { get; set; }
-
     public int Quantity { get; set; }
 
     public required DateTime CreatedAt { get; set; }

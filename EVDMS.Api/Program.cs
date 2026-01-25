@@ -1,10 +1,24 @@
+using EVDMS.Api.Configure;
+using EVDMS.BusinessLogicLayer.Configure;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.Conventions.Add(
+        new RouteTokenTransformerConvention(
+            new KebabCaseParameterTransformer()
+        )
+    );
+});
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+builder.Services.AddDataAccessLayer_Wrap(builder.Configuration).AddBusinessLogicLayer();
 
 var app = builder.Build();
 
@@ -15,6 +29,8 @@ if (app.Environment.IsDevelopment())
 
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    app.Services.CreateScope().AddSeedData();
 }
 
 
