@@ -1,0 +1,20 @@
+# This is a generated file. Not intended for manual editing.
+services:
+  evdms.api:
+    build:
+      context: "D:\\Project\\EVDMS_PRN232"
+      dockerfile: "EVDMS.Api/Dockerfile"
+      target: "base"
+    command: []
+    entrypoint:
+    - "dotnet"
+    - "/app/bin/Debug/net10.0/EVDMS.Api.dll"
+    environment:
+      DOTNET_USE_POLLING_FILE_WATCHER: "true"
+    image: "evdms.api:dev"
+    ports: []
+    volumes:
+    - "D:\\Project\\EVDMS_PRN232\\EVDMS.Api:/app:rw"
+    - "D:\\Project\\EVDMS_PRN232:/src:rw"
+    - "C:\\Users\\hungp\\.nuget\\packages:/home/app/.nuget/packages"
+    working_dir: "/app"

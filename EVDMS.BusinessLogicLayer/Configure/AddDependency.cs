@@ -1,3 +1,5 @@
+using EVDMS.BusinessLogicLayer.Service.Abstraction;
+using EVDMS.BusinessLogicLayer.Service.Implement;
 using EVDMS.DataAccessLayer.Configure;
 using EVDMS.DataAccessLayer.Database;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +13,8 @@ public static class AddDependency
     public static IServiceCollection AddBusinessLogicLayer(this IServiceCollection services)
     {
         // Add Business Logic Layer dependencies here
-
+        services.AddScoped<IRoleService, RoleService>();
+        services.AddScoped<IDealerService, DealerService>();
         return services;
     }
 

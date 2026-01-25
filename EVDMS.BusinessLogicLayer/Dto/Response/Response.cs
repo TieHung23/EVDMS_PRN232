@@ -1,12 +1,16 @@
+using System.Text.Json.Serialization;
+
 namespace EVDMS.BusinessLogicLayer.Dto.Response;
 
 public class Response
 {
-
+    [JsonPropertyOrder(1)]
     public bool IsSuccess { get; set; }
 
+    [JsonPropertyOrder(2)]
     public bool IsFailed { get; set; }
 
+    [JsonPropertyOrder(3)]
     public string Message { get; set; } = string.Empty;
 
     private Response()

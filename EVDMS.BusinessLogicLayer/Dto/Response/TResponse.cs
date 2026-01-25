@@ -1,7 +1,10 @@
+using System.Text.Json.Serialization;
+
 namespace EVDMS.BusinessLogicLayer.Dto.Response;
 
 public class TResponse<T> : Response
 {
+    [JsonPropertyOrder(4)]
     public T? Data { get; set; }
 
 

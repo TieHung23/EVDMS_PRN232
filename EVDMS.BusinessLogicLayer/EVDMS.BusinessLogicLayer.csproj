@@ -8,11 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Service\Abstraction\" />
-      <Folder Include="Service\Implement\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\EVDMS.DataAccessLayer\EVDMS.DataAccessLayer.csproj" />
     </ItemGroup>
 
