@@ -3,10 +3,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EVDMS.DataAccessLayer.Database;
 
-public class ApplicationDbContext : DbContext
+public partial class ApplicationDbContext : DbContext
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
+    }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+        SeedRoles(modelBuilder);
+        SeedDealers(modelBuilder);
+        SeedVehicles(modelBuilder);
+        SeedConfigs(modelBuilder);
+        SeedInitialAccounts(modelBuilder);
+        SeedInventories(modelBuilder);
     }
 
 

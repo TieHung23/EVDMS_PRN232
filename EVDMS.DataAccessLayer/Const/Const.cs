@@ -1,6 +1,4 @@
-using EVDMS.Core.Model;
-
-namespace EVDMS.Core.Const;
+namespace EVDMS.DataAccessLayer.Const;
 
 public static class Const
 {

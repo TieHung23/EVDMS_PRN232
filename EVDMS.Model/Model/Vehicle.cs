@@ -26,6 +26,8 @@ public class Vehicle : TIdentity<Guid>, ICreatable, IModifiable, IStatus
 
     public string Description { get; set; } = string.Empty;
 
+    public ICollection<Config> Configs { get; set; } = new List<Config>();
+
     public int ReleaseYear { get; set; }
 
     public required DateTime CreatedAt { get; set; }

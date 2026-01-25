@@ -20,6 +20,13 @@ public class User : TIdentity<Guid>, ICreatable, IModifiable, IStatus
     public string HashedPassword { get; set; } = string.Empty;
     public string FullName { get; set; } = string.Empty;
 
+    public Guid RoleId { get; set; }
+
+    public Role? Role { get; set; }
+
+    public Guid DealerId { get; set; }
+
+    public Dealer? Dealer { get; set; }
 
     public required DateTime CreatedAt { get; set; }
     public required string CreatedAtTick { get; set; }

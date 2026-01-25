@@ -12,8 +12,7 @@ public static class AddDependency
     public static IServiceCollection AddDataAccessLayer(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
-            b => b.MigrationsAssembly("EVDMS.DataAccessLayer")));
+            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
 
         services.AddScoped(
