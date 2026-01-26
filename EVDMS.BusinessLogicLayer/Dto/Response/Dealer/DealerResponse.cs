@@ -1,6 +1,8 @@
+using EVDMS.BusinessLogicLayer.Dto.Request;
+
 namespace EVDMS.BusinessLogicLayer.Dto.Response.Dealer;
 
-public class DealerResponse
+public class DealerDTO
 {
     public string Code { get; set; } = string.Empty;
 
@@ -13,4 +15,10 @@ public class DealerResponse
     public DateTime CreatedAt { get; set; }
 
     public DateTime ModifiedAt { get; set; }
+}
+
+
+public class DealerResponse : Paging
+{
+    public List<DealerDTO> Dealers { get; set; } = new List<DealerDTO>();
 }

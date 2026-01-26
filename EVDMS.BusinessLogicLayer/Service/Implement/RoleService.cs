@@ -17,13 +17,18 @@ public class RoleService : IRoleService
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<TResponse<List<RoleResponse>>> GetAllRolesAsync()
+    public async Task<TResponse<RoleResponse>> GetAllRolesAsync()
     {
         var roles =await  _unitOfWork.GetRepository<Role, Guid>().GetAllAsync();
 
-        var roleResponses = Mapper.CreateRoleResponseList(roles.ToList());
+        var roleDtos = Mapper.CreateRoleResponseList(roles.ToList());
 
-        return TResponse<List<RoleResponse>>.Success(roleResponses, Const.GetSuccessMessage(Const.NameOfClasses.Role));
+        var roleResponses = new RoleResponse
+        {
+            Roles = roleDtos
+        };
+
+        return TResponse<RoleResponse>.Success(roleResponses, Const.GetSuccessMessage(Const.NameOfClasses.Role));
     }
 
     public async Task<TResponse<RoleResponse>> GetRoleByIdAsync(Guid id)
@@ -35,7 +40,12 @@ public class RoleService : IRoleService
             return TResponse<RoleResponse>.Failed("Role not found");
         }
 
-        var roleResponse = Mapper.CreateRoleResponse(role);
+        var roleDto = Mapper.CreateRoleResponse(role);
+
+        var roleResponse = new RoleResponse
+        {
+            Roles = [roleDto],
+        };
 
         return TResponse<RoleResponse>.Success(roleResponse, Const.GetSuccessMessage(Const.NameOfClasses.Role));
     }

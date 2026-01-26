@@ -1,3 +1,4 @@
+using EVDMS.BusinessLogicLayer.Dto.Request.Dealer;
 using EVDMS.BusinessLogicLayer.Service.Abstraction;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,13 +27,9 @@ public class DealerController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllDealers()
+    public async Task<IActionResult> GetAllDealers([FromQuery] DealerGetFilter filter)
     {
-        var response = await _dealerService.GetAllDealersAsync();
-        if (!response.IsSuccess)
-        {
-            return NotFound(response);
-        }
+        var response = await _dealerService.GetAllDealersAsync(filter);
         return Ok(response);
     }
 }

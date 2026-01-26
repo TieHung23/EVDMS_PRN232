@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using EVDMS.BusinessLogicLayer.Dto.Request;
 
 namespace EVDMS.BusinessLogicLayer.Dto.Response;
 
@@ -6,6 +7,7 @@ public class TResponse<T> : Response
 {
     [JsonPropertyOrder(4)]
     public T? Data { get; set; }
+
 
 
     public TResponse(T data,bool isSuccess, bool isFailed, string message) : base(isSuccess, isFailed, message)
@@ -18,7 +20,7 @@ public class TResponse<T> : Response
         return new TResponse<T>(data,true, false, message);
     }
 
-    public new static TResponse<T> Failed(string message = "Operation failed.")
+    public new static TResponse<T> Failed(string message = "Operation failed.", Paging paging = null!)
     {
         return new TResponse<T>(default!,false, true, message);
     }

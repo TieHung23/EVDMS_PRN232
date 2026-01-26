@@ -7,9 +7,9 @@ namespace EVDMS.BusinessLogicLayer.Helper;
 public static class Mapper
 {
     #region Role Mapper
-    public static RoleResponse CreateRoleResponse(Role role)
+    public static RoleDTO CreateRoleResponse(Role role)
     {
-        return new RoleResponse
+        return new RoleDTO
         {
             Name = role.Name,
             Description = role.Description,
@@ -17,7 +17,7 @@ public static class Mapper
         };
     }
 
-    public static List<RoleResponse> CreateRoleResponseList(List<Role> roles)
+    public static List<RoleDTO> CreateRoleResponseList(List<Role> roles)
     {
         return roles.Select(CreateRoleResponse).ToList();
     }
@@ -25,9 +25,9 @@ public static class Mapper
 
 
     #region Dealer Mapper
-    public static DealerResponse CreateDealerResponse(Dealer dealer)
+    public static DealerDTO CreateDealerResponse(Dealer dealer)
     {
-        return new DealerResponse
+        return new DealerDTO
         {
             Id = dealer.Id,
             Name = dealer.Name,
@@ -38,7 +38,7 @@ public static class Mapper
         };
     }
 
-    public static List<DealerResponse> CreateDealerResponseList(List<Dealer> dealers)
+    public static List<DealerDTO> CreateDealerResponseList(List<Dealer> dealers)
     {
         return dealers.Select(CreateDealerResponse).ToList();
     }

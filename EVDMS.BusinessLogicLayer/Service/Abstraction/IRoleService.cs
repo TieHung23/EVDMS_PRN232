@@ -6,6 +6,6 @@ namespace EVDMS.BusinessLogicLayer.Service.Abstraction;
 
 public interface IRoleService
 {
-    Task<TResponse<List<RoleResponse>>> GetAllRolesAsync();
+    Task<TResponse<RoleResponse>> GetAllRolesAsync();
     Task<TResponse<RoleResponse>> GetRoleByIdAsync(Guid id);
 }
