@@ -16,7 +16,10 @@ builder.Services.AddControllers(options =>
     );
 });
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.OperationFilter<HidePagingParametersOperationFilter>();
+});
 
 builder.Services.AddDataAccessLayer_Wrap(builder.Configuration).AddBusinessLogicLayer();
 
