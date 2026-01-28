@@ -11,4 +11,9 @@
       <ProjectReference Include="..\EVDMS.DataAccessLayer\EVDMS.DataAccessLayer.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="BCrypt.Net-Core" Version="1.6.0" />
+      <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.2" />
+    </ItemGroup>
+
 </Project>

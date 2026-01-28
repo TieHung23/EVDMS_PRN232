@@ -1,3 +1,5 @@
+using EVDMS.BusinessLogicLayer.Configure.Option;
+using EVDMS.BusinessLogicLayer.Helper;
 using EVDMS.BusinessLogicLayer.Service.Abstraction;
 using EVDMS.BusinessLogicLayer.Service.Implement;
 using EVDMS.DataAccessLayer.Configure;
@@ -15,6 +17,11 @@ public static class AddDependency
         // Add Business Logic Layer dependencies here
         services.AddScoped<IRoleService, RoleService>();
         services.AddScoped<IDealerService, DealerService>();
+        services.AddScoped<IAuthService, AuthService>();
+
+
+        // Add helpers
+        services.AddScoped<IJwtHelper, JwtHelper>();
         return services;
     }
 
@@ -29,5 +36,12 @@ public static class AddDependency
         context.Database.Migrate();
 
         return scope;
+    }
+
+    public static IServiceCollection AddOptions(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.Configure<JwtModel>(configuration.GetSection("JwtSettings"));
+
+        return services;
     }
 }
