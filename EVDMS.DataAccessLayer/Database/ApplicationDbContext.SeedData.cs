@@ -120,6 +120,7 @@ public partial class ApplicationDbContext
                 Id = SystemUserId,
                 HashedPassword = defaultHashedPassword,
                 FullName = "System Admin",
+                UserName = "TieHung23",
                 IsActive = true,
                 IsDeleted = false,
                 DealerId = NewGuid(300, 1),
