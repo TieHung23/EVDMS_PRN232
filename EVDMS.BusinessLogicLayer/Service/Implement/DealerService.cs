@@ -1,88 +1,24 @@
 using EVDMS.BusinessLogicLayer.Dto.Request;
+using EVDMS.BusinessLogicLayer.Dto.Request.Dealer;
 using EVDMS.BusinessLogicLayer.Dto.Response;
+using EVDMS.BusinessLogicLayer.Dto.Response.Dealer;
+using EVDMS.BusinessLogicLayer.Helper;
 using EVDMS.BusinessLogicLayer.Service.Abstraction;
 using EVDMS.Core.Model;
+using EVDMS.DataAccessLayer.Const;
 using EVDMS.DataAccessLayer.Repository.Abstraction;
+using Microsoft.Extensions.Logging;
 
 namespace EVDMS.BusinessLogicLayer.Service.Implement;
 
 public class DealerService : IDealerService
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ILogger<DealerService> _logger;
 
     public DealerService(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
-    }
-
-    public async Task<TResponse<DealerListResponse>> GetListAsync(DealerQueryRequest request, CancellationToken cancellationToken = default)
-    {
-        var repository = _unitOfWork.GetRepository<Dealer, Guid>();
-
-        var hasSearch = !string.IsNullOrWhiteSpace(request.Search);
-        var search = request.Search?.Trim() ?? string.Empty;
-
-        Func<IQueryable<Dealer>, IOrderedQueryable<Dealer>>? orderBy = null;
-        var sort = request.Sort?.Trim();
-        if (!string.IsNullOrWhiteSpace(sort))
-        {
-            var isDesc = sort.StartsWith('-');
-            var field = isDesc ? sort[1..] : sort;
-
-            orderBy = field.ToLowerInvariant() switch
-            {
-                "code" => q => isDesc ? q.OrderByDescending(d => d.Code) : q.OrderBy(d => d.Code),
-                "name" => q => isDesc ? q.OrderByDescending(d => d.Name) : q.OrderBy(d => d.Name),
-                "email" => q => isDesc ? q.OrderByDescending(d => d.Email) : q.OrderBy(d => d.Email),
-                "createdat" => q => isDesc ? q.OrderByDescending(d => d.CreatedAt) : q.OrderBy(d => d.CreatedAt),
-                "modifiedat" => q => isDesc ? q.OrderByDescending(d => d.ModifiedAt) : q.OrderBy(d => d.ModifiedAt),
-                _ => null
-            };
-
-            if (orderBy is null)
-            {
-                return TResponse<DealerListResponse>.Failed("Sort must be one of: code, name, email, createdAt, modifiedAt. Use '-' for desc.");
-            }
-        }
-
-        var results = await repository.GetFilterAsync(
-            filter: d => !hasSearch || d.Code.Contains(search) || d.Name.Contains(search) || d.Email.Contains(search),
-            orderBy: orderBy,
-            includeProperties: string.Empty,
-            disableTracking: true,
-            cancellationToken: cancellationToken);
-
-        var all = results.ToList();
-        var totalCount = all.Count;
-
-        var list = all
-            .Skip(request.Skip)
-            .Take(request.Take)
-            .Select(DealerResponse.FromEntity)
-            .ToList();
-
-        var response = new DealerListResponse
-        {
-            PageNumber = request.PageNumber,
-            PageSize = request.PageSize,
-            TotalCount = totalCount,
-            Count = list.Count,
-            Items = list
-        };
-
-        return TResponse<DealerListResponse>.Success(response);
-    }
-
-    public async Task<TResponse<DealerResponse>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
-    {
-        var repository = _unitOfWork.GetRepository<Dealer, Guid>();
-        var dealer = await repository.GetByIdAsync(id);
-        if (dealer is null)
-        {
-            return TResponse<DealerResponse>.Failed("Dealer not found.");
-        }
-
-        return TResponse<DealerResponse>.Success(DealerResponse.FromEntity(dealer));
     }
 
     public async Task<TResponse<DealerResponse>> CreateAsync(DealerCreateRequest request, CancellationToken cancellationToken = default)
@@ -143,5 +79,60 @@ public class DealerService : IDealerService
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Response.Success("Dealer deleted successfully.");
+    }
+}
+
+
+    public DealerService(IUnitOfWork unitOfWork, ILogger<DealerService> logger)
+    {
+        _unitOfWork = unitOfWork;
+        _logger = logger;
+    }
+
+
+    public async Task<TResponse<DealerResponse>> GetAllDealersAsync(DealerGetFilter filter)
+    {
+        var (skip, take) = RequestExtensions.ToSkipTake(filter.PageNumber, filter.PageSize);
+
+        var dealers = await _unitOfWork
+            .GetRepository<Dealer, Guid>()
+            .GetFilterAsync(filter:dealer =>
+                (string.IsNullOrEmpty(filter.Name)  || dealer.Name.Contains(filter.Name)) &&
+                (string.IsNullOrEmpty(filter.Code)  || dealer.Code.Contains(filter.Code)) &&
+                (string.IsNullOrEmpty(filter.Email) || dealer.Email.Contains(filter.Email)),
+                skip: skip,
+                take: take
+            );
+
+        var dealerDtos = Mapper.CreateDealerResponseList(dealers.ToList());
+
+        var dealerResponse = new DealerResponse
+        {
+            Dealers =  dealerDtos,
+            PageNumber = filter.PageNumber,
+            PageSize = filter.PageSize,
+        };
+
+        return TResponse<DealerResponse>.Success(dealerResponse,
+            Const.GetSuccessMessage(Const.NameOfClasses.Dealer));
+    }
+
+    public async Task<TResponse<DealerResponse>> GetDealerByIdAsync(Guid id)
+    {
+        var dealer = await _unitOfWork.GetRepository<Dealer, Guid>().GetByIdAsync(id);
+
+        if (dealer == null)
+        {
+            return TResponse<DealerResponse>.Failed("Dealer not found");
+        }
+
+        var dealerDto = Mapper.CreateDealerResponse(dealer);
+
+        var dealerResponse = new DealerResponse
+        {
+            Dealers = [dealerDto],
+        };
+
+        return TResponse<DealerResponse>.Success(dealerResponse, Const.GetSuccessMessage(Const.NameOfClasses.Dealer));
     }
 }

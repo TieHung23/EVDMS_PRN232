@@ -8,12 +8,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Service\Abstraction\" />
-      <Folder Include="Service\Implement\" />
+      <ProjectReference Include="..\EVDMS.DataAccessLayer\EVDMS.DataAccessLayer.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\EVDMS.DataAccessLayer\EVDMS.DataAccessLayer.csproj" />
+      <PackageReference Include="BCrypt.Net-Core" Version="1.6.0" />
+      <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.2" />
     </ItemGroup>
 
 </Project>

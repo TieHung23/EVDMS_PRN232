@@ -30,5 +30,7 @@ public interface IGenericRepository<T, in TId> where T : TIdentity<TId>
         Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
         string includeProperties = "",
         bool disableTracking = true,
+        int skip = 0,
+        int take = 50,
         CancellationToken cancellationToken = default);
 }

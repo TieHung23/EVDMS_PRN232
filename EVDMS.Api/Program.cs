@@ -1,6 +1,7 @@
 using EVDMS.Api.Configure;
 using EVDMS.BusinessLogicLayer.Configure;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Microsoft.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,8 +21,21 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.OperationFilter<HidePagingParametersOperationFilter>();
 });
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter JWT Token as: Bearer {your token here}",
+    });
+    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement { [new OpenApiSecuritySchemeReference("Bearer", document)] = [] });
 
-builder.Services.AddDataAccessLayer_Wrap(builder.Configuration).AddBusinessLogicLayer();
+});
+
+builder.Services.ConfigureAuthentication(builder.Configuration).ConfigureAuthorization();
+builder.Services.AddDataAccessLayer_Wrap(builder.Configuration).AddBusinessLogicLayer().AddOptions(builder.Configuration);
 
 var app = builder.Build();
 
@@ -35,7 +49,8 @@ if (app.Environment.IsDevelopment())
 
     app.Services.CreateScope().AddSeedData();
 }
-
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 app.UseHttpsRedirection();

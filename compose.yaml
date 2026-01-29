@@ -1,4 +1,15 @@
 ﻿services:
+  evdms.sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: evdms.sqlserver
+    ports:
+      - "1433:1433"
+    environment:
+      SA_PASSWORD: YourStrong@Password123
+      ACCEPT_EULA: "Y"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+
   evdms.api:
     image: evdms.api
     build:
@@ -11,17 +22,6 @@
       - ConnectionStrings__DefaultConnection=Server=evdms.sqlserver,1433;Database=EVDMSdb;User Id=sa;Password=YourStrong@Password123;TrustServerCertificate=True
     depends_on:
       - evdms.sqlserver
-
-  evdms.sqlserver:
-    image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: evdms.sqlserver
-    ports:
-      - "1433:1433"
-    environment:
-      SA_PASSWORD: YourStrong@Password123
-      ACCEPT_EULA: "Y"
-    volumes:
-      - sqlserver_data:/var/opt/mssql
 
 volumes:
   sqlserver_data:

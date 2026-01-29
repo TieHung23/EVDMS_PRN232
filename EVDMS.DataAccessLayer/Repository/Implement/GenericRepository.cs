@@ -85,7 +85,9 @@ public class GenericRepository<T, TId> : IGenericRepository<T, TId> where T : TI
     }
 
     public Task<IEnumerable<T>> GetFilterAsync(Expression<Func<T, bool>>? filter = null, Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null, string includeProperties = "",
-        bool disableTracking = true, CancellationToken cancellationToken = default)
+        bool disableTracking = true,
+        int skip = 0,
+        int take = 0, CancellationToken cancellationToken = default)
     {
         IQueryable<T> query = _dbSet;
 
@@ -96,6 +98,10 @@ public class GenericRepository<T, TId> : IGenericRepository<T, TId> where T : TI
                 .Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
 
         if (filter != null) query = query.Where(filter);
+
+        if (skip > 0) query = query.Skip(skip);
+
+        if (take > 0) query = query.Take(take);
 
         return Task.FromResult(orderBy != null ? orderBy(query).AsEnumerable() : query.AsEnumerable());
     }
