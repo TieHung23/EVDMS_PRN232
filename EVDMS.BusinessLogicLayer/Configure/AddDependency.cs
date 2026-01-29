@@ -14,9 +14,10 @@ public static class AddDependency
 {
     public static IServiceCollection AddBusinessLogicLayer(this IServiceCollection services)
     {
+        services.AddScoped<IDealerService, DealerService>();
+        services.AddScoped<IVehicleService, VehicleService>();
         // Add Business Logic Layer dependencies here
         services.AddScoped<IRoleService, RoleService>();
-        services.AddScoped<IDealerService, DealerService>();
         services.AddScoped<IAuthService, AuthService>();
 
 

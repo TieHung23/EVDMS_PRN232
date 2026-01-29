@@ -1,4 +1,4 @@
-using EVDMS.BusinessLogicLayer.Dto.Response.Dealer;
+using EVDMS.BusinessLogicLayer.Dto.Response;
 using EVDMS.BusinessLogicLayer.Dto.Response.Role;
 using EVDMS.Core.Model;
 
@@ -25,9 +25,9 @@ public static class Mapper
 
 
     #region Dealer Mapper
-    public static DealerDTO CreateDealerResponse(Dealer dealer)
+    public static DealerResponse CreateDealerResponse(Dealer dealer)
     {
-        return new DealerDTO
+        return new DealerResponse
         {
             Id = dealer.Id,
             Name = dealer.Name,
@@ -38,7 +38,7 @@ public static class Mapper
         };
     }
 
-    public static List<DealerDTO> CreateDealerResponseList(List<Dealer> dealers)
+    public static List<DealerResponse> CreateDealerResponseList(List<Dealer> dealers)
     {
         return dealers.Select(CreateDealerResponse).ToList();
     }

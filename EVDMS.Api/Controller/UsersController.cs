@@ -4,7 +4,7 @@ namespace EVDMS.Api.Controller;
 
 [ApiController]
 [Route("api/[controller]")]
-public class UserController : ControllerBase
+public class UsersController : ControllerBase
 {
 
 }

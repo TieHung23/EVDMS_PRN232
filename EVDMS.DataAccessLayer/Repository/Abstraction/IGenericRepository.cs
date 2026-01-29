@@ -31,6 +31,6 @@ public interface IGenericRepository<T, in TId> where T : TIdentity<TId>
         string includeProperties = "",
         bool disableTracking = true,
         int skip = 0,
-        int take = 50,
+        int take = 0,
         CancellationToken cancellationToken = default);
 }
