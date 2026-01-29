@@ -58,7 +58,19 @@ public class GenericRepository<T, TId> : IGenericRepository<T, TId> where T : TI
 
     public bool Delete(T entity)
     {
-        _dbContext.Set<T>().Remove(entity);
+        if (entity is IStatus activated and IModifiable modified)
+        {
+            activated.IsActive = false;
+            activated.IsDeleted = true;
+            modified.ModifiedAt = DateTime.Now;
+            modified.ModifiedAtTick = DateTime.Now.Ticks.ToString();
+            _ = _dbContext.Set<T>().Update(entity);
+        }
+        else
+        {
+            _dbContext.Set<T>().Remove(entity);
+        }
+
         return true;
     }
 
