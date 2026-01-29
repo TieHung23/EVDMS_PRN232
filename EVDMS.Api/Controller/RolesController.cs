@@ -6,11 +6,11 @@ namespace EVDMS.Api.Controller;
 
 [ApiController]
 [Route("api/[controller]")]
-public class RoleController : ControllerBase
+public class RolesController : ControllerBase
 {
     private readonly IRoleService _roleService;
 
-    public RoleController(IRoleService roleService)
+    public RolesController(IRoleService roleService)
     {
         _roleService = roleService;
     }

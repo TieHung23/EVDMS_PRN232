@@ -6,12 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 namespace EVDMS.Api.Controller;
 
 [ApiController]
-[Route("api/dealers")]
-public class DealerController : ControllerBase
+[Route("api/[controller]")]
+public class DealersController : ControllerBase
 {
     private readonly IDealerService _dealerService;
 
-    public DealerController(IDealerService dealerService)
+    public DealersController(IDealerService dealerService)
     {
         _dealerService = dealerService;
     }

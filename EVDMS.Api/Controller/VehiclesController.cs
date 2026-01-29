@@ -6,11 +6,11 @@ namespace EVDMS.Api.Controller;
 
 [ApiController]
 [Route("api/vehicles")]
-public class VehicleController : ControllerBase
+public class VehiclesController : ControllerBase
 {
     private readonly IVehicleService _vehicleService;
 
-    public VehicleController(IVehicleService vehicleService)
+    public VehiclesController(IVehicleService vehicleService)
     {
         _vehicleService = vehicleService;
     }
