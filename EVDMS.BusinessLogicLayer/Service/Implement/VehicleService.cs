@@ -1,5 +1,6 @@
 using EVDMS.BusinessLogicLayer.Dto.Request;
 using EVDMS.BusinessLogicLayer.Dto.Response;
+using EVDMS.BusinessLogicLayer.Helper;
 using EVDMS.BusinessLogicLayer.Service.Abstraction;
 using EVDMS.Core.Model;
 using EVDMS.DataAccessLayer.Repository.Abstraction;
@@ -19,49 +20,22 @@ public class VehicleService : IVehicleService
     {
         var repository = _unitOfWork.GetRepository<Vehicle, Guid>();
 
-        var hasSearch = !string.IsNullOrWhiteSpace(request.Search);
-        var search = request.Search?.Trim() ?? string.Empty;
-
-        Func<IQueryable<Vehicle>, IOrderedQueryable<Vehicle>>? orderBy = null;
-        var sort = request.Sort?.Trim();
-        if (!string.IsNullOrWhiteSpace(sort))
-        {
-            var isDesc = sort.StartsWith('-');
-            var field = isDesc ? sort[1..] : sort;
-
-            orderBy = field.ToLowerInvariant() switch
-            {
-                "modelname" => q => isDesc ? q.OrderByDescending(v => v.ModelName) : q.OrderBy(v => v.ModelName),
-                "brand" => q => isDesc ? q.OrderByDescending(v => v.Brand) : q.OrderBy(v => v.Brand),
-                "vehicletype" => q => isDesc ? q.OrderByDescending(v => v.VehicleType) : q.OrderBy(v => v.VehicleType),
-                "releaseyear" => q => isDesc ? q.OrderByDescending(v => v.ReleaseYear) : q.OrderBy(v => v.ReleaseYear),
-                "createdat" => q => isDesc ? q.OrderByDescending(v => v.CreatedAt) : q.OrderBy(v => v.CreatedAt),
-                "modifiedat" => q => isDesc ? q.OrderByDescending(v => v.ModifiedAt) : q.OrderBy(v => v.ModifiedAt),
-                _ => null
-            };
-
-            if (orderBy is null)
-            {
-                return TResponse<VehicleListResponse>.Failed("Sort must be one of: modelName, brand, vehicleType, releaseYear, createdAt, modifiedAt. Use '-' for desc.");
-            }
-        }
-
         var results = await repository.GetFilterAsync(
-            filter: v => !hasSearch
-                         || v.ModelName.Contains(search)
-                         || v.Brand.Contains(search)
-                         || v.VehicleType.Contains(search),
-            orderBy: orderBy,
+            filter: v => (string.IsNullOrEmpty(request.ModelName) || v.ModelName.Contains(request.ModelName)) &&
+                         (string.IsNullOrEmpty(request.Brand) || v.Brand.Contains(request.Brand)) &&
+                         (string.IsNullOrEmpty(request.VehicleType) || v.VehicleType.Contains(request.VehicleType)) &&
+                         (!request.ReleaseYear.HasValue || v.ReleaseYear == request.ReleaseYear.Value),
             includeProperties: string.Empty,
             disableTracking: true,
             cancellationToken: cancellationToken);
 
         var all = results.ToList();
         var totalCount = all.Count;
+        var (skip, take) = RequestExtensions.ToSkipTake(request.PageNumber, request.PageSize);
 
         var list = all
-            .Skip(request.Skip)
-            .Take(request.Take)
+            .Skip(skip)
+            .Take(take)
             .Select(VehicleResponse.FromEntity)
             .ToList();
 
@@ -131,8 +105,6 @@ public class VehicleService : IVehicleService
         vehicle.VehicleType = request.VehicleType;
         vehicle.Description = request.Description;
         vehicle.ReleaseYear = request.ReleaseYear;
-        vehicle.ModifiedBy = request.ModifiedBy;
-
         repository.Update(vehicle);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
@@ -148,7 +120,6 @@ public class VehicleService : IVehicleService
             return Response.Failed("Vehicle not found.");
         }
 
-        vehicle.ModifiedBy = request.ModifiedBy;
         repository.Delete(vehicle);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
