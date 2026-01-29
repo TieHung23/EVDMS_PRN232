@@ -13,7 +13,7 @@ public class DealerResponse
     public DateTime CreatedAt { get; set; }
     public DateTime ModifiedAt { get; set; }
 
-    public static DealerResponse FromEntity(Dealer dealer)
+    public static DealerResponse FromEntity(EVDMS.Core.Model.Dealer dealer)
     {
         return new DealerResponse
         {

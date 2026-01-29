@@ -1,7 +1,6 @@
 using EVDMS.BusinessLogicLayer.Dto.Request;
 using EVDMS.BusinessLogicLayer.Dto.Request.Dealer;
 using EVDMS.BusinessLogicLayer.Dto.Response;
-using EVDMS.BusinessLogicLayer.Dto.Response.Dealer;
 using EVDMS.BusinessLogicLayer.Helper;
 using EVDMS.BusinessLogicLayer.Service.Abstraction;
 using EVDMS.Core.Model;
@@ -16,10 +15,13 @@ public class DealerService : IDealerService
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<DealerService> _logger;
 
-    public DealerService(IUnitOfWork unitOfWork)
+    public DealerService(IUnitOfWork unitOfWork, ILogger<DealerService> logger)
     {
         _unitOfWork = unitOfWork;
+        _logger = logger;
     }
+
+
 
     public async Task<TResponse<DealerResponse>> CreateAsync(DealerCreateRequest request, CancellationToken cancellationToken = default)
     {
@@ -56,8 +58,6 @@ public class DealerService : IDealerService
         dealer.Code = request.Code;
         dealer.Name = request.Name;
         dealer.Email = request.Email;
-        dealer.ModifiedBy = request.ModifiedBy;
-
         repository.Update(dealer);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
@@ -73,24 +73,15 @@ public class DealerService : IDealerService
             return Response.Failed("Dealer not found.");
         }
 
-        dealer.ModifiedBy = request.ModifiedBy;
-
         repository.Delete(dealer);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Response.Success("Dealer deleted successfully.");
     }
-}
 
 
-    public DealerService(IUnitOfWork unitOfWork, ILogger<DealerService> logger)
-    {
-        _unitOfWork = unitOfWork;
-        _logger = logger;
-    }
 
-
-    public async Task<TResponse<DealerResponse>> GetAllDealersAsync(DealerGetFilter filter)
+    public async Task<TResponse<DealerListResponse>> GetAllDealersAsync(DealerGetFilter filter)
     {
         var (skip, take) = RequestExtensions.ToSkipTake(filter.PageNumber, filter.PageSize);
 
@@ -106,14 +97,16 @@ public class DealerService : IDealerService
 
         var dealerDtos = Mapper.CreateDealerResponseList(dealers.ToList());
 
-        var dealerResponse = new DealerResponse
+        var dealerResponse = new DealerListResponse
         {
-            Dealers =  dealerDtos,
+            Items = dealerDtos,
             PageNumber = filter.PageNumber,
             PageSize = filter.PageSize,
+            TotalCount = dealerDtos.Count,
+            Count = dealerDtos.Count
         };
 
-        return TResponse<DealerResponse>.Success(dealerResponse,
+        return TResponse<DealerListResponse>.Success(dealerResponse,
             Const.GetSuccessMessage(Const.NameOfClasses.Dealer));
     }
 
@@ -126,13 +119,6 @@ public class DealerService : IDealerService
             return TResponse<DealerResponse>.Failed("Dealer not found");
         }
 
-        var dealerDto = Mapper.CreateDealerResponse(dealer);
-
-        var dealerResponse = new DealerResponse
-        {
-            Dealers = [dealerDto],
-        };
-
-        return TResponse<DealerResponse>.Success(dealerResponse, Const.GetSuccessMessage(Const.NameOfClasses.Dealer));
+        return TResponse<DealerResponse>.Success(DealerResponse.FromEntity(dealer), Const.GetSuccessMessage(Const.NameOfClasses.Dealer));
     }
 }

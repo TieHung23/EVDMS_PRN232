@@ -1,4 +1,5 @@
 using EVDMS.BusinessLogicLayer.Dto.Request;
+using EVDMS.BusinessLogicLayer.Dto.Request.Dealer;
 using EVDMS.BusinessLogicLayer.Service.Abstraction;
 using Microsoft.AspNetCore.Mvc;
 
@@ -41,7 +42,7 @@ public class DealerController : ControllerBase
 
         return NoContent();
     }
-}
+
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetDealerById(Guid id)
     {
