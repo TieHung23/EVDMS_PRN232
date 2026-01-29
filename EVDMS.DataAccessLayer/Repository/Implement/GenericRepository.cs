@@ -99,7 +99,7 @@ public class GenericRepository<T, TId> : IGenericRepository<T, TId> where T : TI
     public Task<IEnumerable<T>> GetFilterAsync(Expression<Func<T, bool>>? filter = null, Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null, string includeProperties = "",
         bool disableTracking = true,
         int skip = 0,
-        int take = 0, CancellationToken cancellationToken = default)
+        int take = 50, CancellationToken cancellationToken = default)
     {
         IQueryable<T> query = _dbSet;
 
