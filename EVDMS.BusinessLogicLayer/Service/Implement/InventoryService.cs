@@ -138,7 +138,7 @@ public class InventoryService : IInventoryService
         {
             return Response.Failed("Inventory not found.");
         }
-
+        inventory.ModifiedBy = request.ModifiedBy;
         repository.Delete(inventory);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 

@@ -10,7 +10,6 @@ namespace EVDMS.BusinessLogicLayer.Service.Implement;
 public class VehicleService : IVehicleService
 {
     private readonly IUnitOfWork _unitOfWork;
-
     public VehicleService(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
@@ -105,6 +104,7 @@ public class VehicleService : IVehicleService
         vehicle.VehicleType = request.VehicleType;
         vehicle.Description = request.Description;
         vehicle.ReleaseYear = request.ReleaseYear;
+        vehicle.ModifiedBy = request.ModifiedBy;
         repository.Update(vehicle);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
@@ -119,7 +119,7 @@ public class VehicleService : IVehicleService
         {
             return Response.Failed("Vehicle not found.");
         }
-
+        vehicle.ModifiedBy = vehicle.ModifiedBy;
         repository.Delete(vehicle);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 

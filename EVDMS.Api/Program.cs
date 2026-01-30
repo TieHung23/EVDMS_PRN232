@@ -32,6 +32,7 @@ builder.Services.AddSwaggerGen(options =>
     options.AddSecurityRequirement(document => new OpenApiSecurityRequirement { [new OpenApiSecuritySchemeReference("Bearer", document)] = [] });
 
 });
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.ConfigureAuthentication(builder.Configuration).ConfigureAuthorization();
 builder.Services.AddDataAccessLayer_Wrap(builder.Configuration).AddBusinessLogicLayer().AddOptions(builder.Configuration);

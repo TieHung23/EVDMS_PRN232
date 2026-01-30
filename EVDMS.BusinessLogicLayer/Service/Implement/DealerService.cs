@@ -58,6 +58,7 @@ public class DealerService : IDealerService
         dealer.Code = request.Code;
         dealer.Name = request.Name;
         dealer.Email = request.Email;
+        dealer.ModifiedBy = request.ModifiedBy;
         repository.Update(dealer);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
@@ -72,7 +73,7 @@ public class DealerService : IDealerService
         {
             return Response.Failed("Dealer not found.");
         }
-
+        dealer.ModifiedBy = request.ModifiedBy;
         repository.Delete(dealer);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 

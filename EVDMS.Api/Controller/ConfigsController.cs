@@ -1,5 +1,7 @@
+using System.Security.Claims;
 using EVDMS.BusinessLogicLayer.Dto.Request;
 using EVDMS.BusinessLogicLayer.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ApiResponse = EVDMS.BusinessLogicLayer.Dto.Response.Response;
 
@@ -10,10 +12,12 @@ namespace EVDMS.Api.Controllers;
 public class ConfigsController : ControllerBase
 {
     private readonly IConfigService _configService;
+    private readonly  IHttpContextAccessor _httpContextAccessor;
 
-    public ConfigsController(IConfigService configService)
+    public ConfigsController(IConfigService configService, IHttpContextAccessor httpContextAccessor)
     {
         _configService = configService;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     /// <summary>
@@ -52,6 +56,7 @@ public class ConfigsController : ControllerBase
     /// Create a new config
     /// </summary>
     [HttpPost]
+    [Authorize("EVMStaffPolicy")]
     public async Task<IActionResult> Create([FromBody] CreateConfigRequest request)
     {
         if (!ModelState.IsValid)
@@ -60,7 +65,10 @@ public class ConfigsController : ControllerBase
         }
 
         // TODO: Get actual user from JWT claims when authentication is implemented
-        var createdBy = "System";
+        var createdBy = _httpContextAccessor.HttpContext?
+            .User?
+            .FindFirst(ClaimTypes.NameIdentifier)?
+            .Value;;
 
         var result = await _configService.CreateAsync(request, createdBy);
 
@@ -76,6 +84,7 @@ public class ConfigsController : ControllerBase
     /// Update an existing config
     /// </summary>
     [HttpPut("{id:guid}")]
+    [Authorize("EVMStaffPolicy")]
     public async Task<IActionResult> Update(Guid id, [FromBody] UpdateConfigRequest request)
     {
         if (!ModelState.IsValid)
@@ -84,7 +93,10 @@ public class ConfigsController : ControllerBase
         }
 
         // TODO: Get actual user from JWT claims when authentication is implemented
-        var modifiedBy = "System";
+        var modifiedBy = _httpContextAccessor.HttpContext?
+            .User?
+            .FindFirst(ClaimTypes.NameIdentifier)?
+            .Value;;
 
         var result = await _configService.UpdateAsync(id, request, modifiedBy);
 
@@ -100,10 +112,13 @@ public class ConfigsController : ControllerBase
     /// Delete a config (soft delete)
     /// </summary>
     [HttpDelete("{id:guid}")]
+    [Authorize("EVMStaffPolicy")]
     public async Task<IActionResult> Delete(Guid id)
     {
-        // TODO: Get actual user from JWT claims when authentication is implemented
-        var modifiedBy = "System";
+        var modifiedBy =_httpContextAccessor.HttpContext?
+            .User?
+            .FindFirst(ClaimTypes.NameIdentifier)?
+            .Value;;
 
         var result = await _configService.DeleteAsync(id, modifiedBy);
 

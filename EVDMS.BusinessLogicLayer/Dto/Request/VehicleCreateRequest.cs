@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace EVDMS.BusinessLogicLayer.Dto.Request;
 
 public class VehicleCreateRequest
@@ -7,5 +9,6 @@ public class VehicleCreateRequest
     public string VehicleType { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public int ReleaseYear { get; set; }
+    [JsonIgnore]
     public string CreatedBy { get; set; } = string.Empty;
 }

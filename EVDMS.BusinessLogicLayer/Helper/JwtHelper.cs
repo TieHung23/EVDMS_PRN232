@@ -21,7 +21,7 @@ public class JwtHelper : IJwtHelper
     {
         return Guid.NewGuid().ToString("N");
     }
-    public (string, string, string) GenerateToken(string userName, string fullName, string roleName)
+    public (string, string, string) GenerateToken(string userName, string fullName, string roleName, string userId)
     {
         var issuer = _jwtModel.Issuer;
         var audience = _jwtModel.Audience;
@@ -38,7 +38,8 @@ public class JwtHelper : IJwtHelper
                 new Claim(JwtRegisteredClaimNames.Jti, Math.Abs(BitConverter.ToInt64(Guid.NewGuid().ToByteArray())).ToString()),
                 new Claim("userName", userName),
                 new Claim("fullName", fullName),
-                new Claim(ClaimTypes.Role, roleName)
+                new Claim(ClaimTypes.Role, roleName),
+                new Claim(ClaimTypes.NameIdentifier, userId)
             ]),
             Expires = DateTime.Now.AddMinutes(expiresMinutes),
             Issuer = issuer,

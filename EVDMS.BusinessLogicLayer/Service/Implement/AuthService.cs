@@ -28,17 +28,30 @@ public class AuthService : IAuthService
             includeProperties: $"{Const.NameOfClasses.Role}"
         );
 
-        if (user == null || BCrypt.Net.BCrypt.Verify(dto.Password, user.HashedPassword))
+        var hashingPassword = HashingPassword.HashPassword(dto.Password);
+
+        if (user == null)
         {
             return TResponse<UserResponseLoginDTO>.Failed("Invalid username or password.");
         }
+
+        var isValidPassword = HashingPassword.VerifyPassword(
+            dto.Password,
+            user.HashedPassword
+        );
+
+        if (!isValidPassword)
+        {
+            return TResponse<UserResponseLoginDTO>.Failed("Invalid username or password.");
+        }
+
 
         if (!user.IsActive || user.IsDeleted)
         {
             return TResponse<UserResponseLoginDTO>.Failed("User account is inactive.");
         }
 
-        var token = _jwtHelper.GenerateToken(user.UserName, user.FullName, user.Role!.Name);
+        var token = _jwtHelper.GenerateToken(user.UserName, user.FullName, user.Role!.Name, user.Id.ToString());
 
         var response = TResponse<UserResponseLoginDTO>.Success(data: new UserResponseLoginDTO
         {

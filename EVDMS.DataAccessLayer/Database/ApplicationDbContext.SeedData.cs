@@ -112,7 +112,7 @@ public partial class ApplicationDbContext
 
     private void SeedInitialAccounts(ModelBuilder modelBuilder)
     {
-        var defaultHashedPassword = "$2a$11$0uhjzQiyqR.PruEMpOERluaHHR2w96U8rE1ZKES9ecyACHNPnEqqm";
+        var defaultHashedPassword = "$2b$10$81Kb12PBFTcp6Y4lxasV1uyC/8gOhRJk7CgPBH.wjrsSUKcDhpDue";
 
         modelBuilder.Entity<User>().HasData(
             new User
