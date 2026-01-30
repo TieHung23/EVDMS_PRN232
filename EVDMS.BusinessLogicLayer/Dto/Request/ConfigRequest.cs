@@ -35,4 +35,11 @@ public class ConfigQueryRequest : Paging
     public bool? IsActive { get; set; }
     public string? SortBy { get; set; }
     public bool SortDescending { get; set; } = false;
+    
+    /// <summary>
+    /// Comma-separated list of fields to return (e.g., "id,name,description")
+    /// If empty, all fields are returned.
+    /// Available fields: id, name, description, vehicleId, vehicleName, createdAt, createdBy, modifiedAt, modifiedBy, isActive
+    /// </summary>
+    public string? Fields { get; set; }
 }

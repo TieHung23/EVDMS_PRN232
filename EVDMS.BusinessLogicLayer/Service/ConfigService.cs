@@ -55,10 +55,15 @@ public class ConfigService : IConfigService
         var totalItems = configList.Count;
         var totalPages = (int)Math.Ceiling(totalItems / (double)request.PageSize);
 
+        // Parse selected fields
+        var selectedFields = string.IsNullOrWhiteSpace(request.Fields)
+            ? null
+            : request.Fields.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
         var pagedConfigs = configList
             .Skip(request.Skip)
             .Take(request.Take)
-            .Select(MapToResponse)
+            .Select(c => MapToResponse(c).ToSelectedFields(selectedFields))
             .ToList();
 
         var response = new ConfigListResponse

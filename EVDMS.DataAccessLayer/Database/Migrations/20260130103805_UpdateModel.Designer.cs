@@ -4,6 +4,7 @@ using EVDMS.DataAccessLayer.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EVDMS.DataAccessLayer.Database.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260130103805_UpdateModel")]
+    partial class UpdateModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -829,7 +832,7 @@ namespace EVDMS.DataAccessLayer.Database.Migrations
                             ModifiedAtTick = "638396640000000000",
                             ModifiedBy = "",
                             RoleId = new Guid("00000064-0004-0000-0000-000000000000"),
-                            UserName = "TieHung23"
+                            UserName = ""
                         });
                 });
 
