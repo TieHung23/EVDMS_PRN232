@@ -1,5 +1,6 @@
 using EVDMS.BusinessLogicLayer.Configure.Option;
 using EVDMS.BusinessLogicLayer.Helper;
+using EVDMS.BusinessLogicLayer.Service;
 using EVDMS.BusinessLogicLayer.Service.Abstraction;
 using EVDMS.BusinessLogicLayer.Service.Implement;
 using EVDMS.DataAccessLayer.Configure;
@@ -20,6 +21,7 @@ public static class AddDependency
         services.AddScoped<IRoleService, RoleService>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IInventoryService, InventoryService>();
+        services.AddScoped<IConfigService, ConfigService>();
 
 
         // Add helpers
