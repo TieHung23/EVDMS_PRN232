@@ -19,6 +19,7 @@ public static class AddDependency
         // Add Business Logic Layer dependencies here
         services.AddScoped<IRoleService, RoleService>();
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IInventoryService, InventoryService>();
 
 
         // Add helpers
