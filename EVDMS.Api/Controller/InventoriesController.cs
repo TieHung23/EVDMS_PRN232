@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace EVDMS.Api.Controller;
 
 [ApiController]
-[Route("api/inventories")]
+[Route("api/[controller]")]
 public class InventoriesController : ControllerBase
 {
     private readonly IInventoryService _inventoryService;
