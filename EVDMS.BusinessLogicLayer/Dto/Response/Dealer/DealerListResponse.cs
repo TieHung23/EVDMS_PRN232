@@ -1,4 +1,4 @@
-namespace EVDMS.BusinessLogicLayer.Dto.Response;
+namespace EVDMS.BusinessLogicLayer.Dto.Response.Dealer;
 
 public class DealerListResponse
 {

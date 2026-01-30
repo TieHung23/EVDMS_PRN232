@@ -1,6 +1,4 @@
-using EVDMS.Core.Model;
-
-namespace EVDMS.BusinessLogicLayer.Dto.Response;
+namespace EVDMS.BusinessLogicLayer.Dto.Response.Inventory;
 
 public class InventoryResponse
 {
@@ -21,7 +19,7 @@ public class InventoryResponse
     public DateTime CreatedAt { get; set; }
     public DateTime ModifiedAt { get; set; }
 
-    public static InventoryResponse FromEntity(Inventory inventory)
+    public static InventoryResponse FromEntity(Core.Model.Inventory inventory)
     {
         return new InventoryResponse
         {

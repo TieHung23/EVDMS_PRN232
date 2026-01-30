@@ -1,7 +1,8 @@
-using EVDMS.BusinessLogicLayer.Dto.Request;
+using EVDMS.BusinessLogicLayer.Dto.Request.Config;
 using EVDMS.BusinessLogicLayer.Dto.Response;
+using EVDMS.BusinessLogicLayer.Dto.Response.Config;
 
-namespace EVDMS.BusinessLogicLayer.Service;
+namespace EVDMS.BusinessLogicLayer.Service.Abstraction;
 
 public interface IConfigService
 {

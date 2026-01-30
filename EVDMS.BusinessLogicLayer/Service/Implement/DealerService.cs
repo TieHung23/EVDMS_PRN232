@@ -1,6 +1,7 @@
 using EVDMS.BusinessLogicLayer.Dto.Request;
 using EVDMS.BusinessLogicLayer.Dto.Request.Dealer;
 using EVDMS.BusinessLogicLayer.Dto.Response;
+using EVDMS.BusinessLogicLayer.Dto.Response.Dealer;
 using EVDMS.BusinessLogicLayer.Helper;
 using EVDMS.BusinessLogicLayer.Service.Abstraction;
 using EVDMS.Core.Model;

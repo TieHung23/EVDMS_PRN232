@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace EVDMS.BusinessLogicLayer.Dto.Request;
+namespace EVDMS.BusinessLogicLayer.Dto.Request.Dealer;
 
 public class DealerUpdateRequest
 {

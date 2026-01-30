@@ -1,9 +1,11 @@
-using EVDMS.BusinessLogicLayer.Dto.Request;
+using EVDMS.BusinessLogicLayer.Dto.Request.Config;
 using EVDMS.BusinessLogicLayer.Dto.Response;
+using EVDMS.BusinessLogicLayer.Dto.Response.Config;
+using EVDMS.BusinessLogicLayer.Service.Abstraction;
 using EVDMS.Core.Model;
 using EVDMS.DataAccessLayer.Repository.Abstraction;
 
-namespace EVDMS.BusinessLogicLayer.Service;
+namespace EVDMS.BusinessLogicLayer.Service.Implement;
 
 public class ConfigService : IConfigService
 {

@@ -1,5 +1,7 @@
 using EVDMS.BusinessLogicLayer.Dto.Request;
+using EVDMS.BusinessLogicLayer.Dto.Request.Inventory;
 using EVDMS.BusinessLogicLayer.Dto.Response;
+using EVDMS.BusinessLogicLayer.Dto.Response.Inventory;
 
 namespace EVDMS.BusinessLogicLayer.Service.Abstraction;
 

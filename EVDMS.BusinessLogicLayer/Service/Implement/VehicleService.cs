@@ -1,5 +1,7 @@
 using EVDMS.BusinessLogicLayer.Dto.Request;
+using EVDMS.BusinessLogicLayer.Dto.Request.Vehicle;
 using EVDMS.BusinessLogicLayer.Dto.Response;
+using EVDMS.BusinessLogicLayer.Dto.Response.Vehicle;
 using EVDMS.BusinessLogicLayer.Helper;
 using EVDMS.BusinessLogicLayer.Service.Abstraction;
 using EVDMS.Core.Model;

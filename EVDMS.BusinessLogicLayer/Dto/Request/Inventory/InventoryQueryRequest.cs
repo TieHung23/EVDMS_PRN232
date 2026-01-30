@@ -1,4 +1,4 @@
-namespace EVDMS.BusinessLogicLayer.Dto.Request;
+namespace EVDMS.BusinessLogicLayer.Dto.Request.Inventory;
 
 public class InventoryQueryRequest : Paging
 {

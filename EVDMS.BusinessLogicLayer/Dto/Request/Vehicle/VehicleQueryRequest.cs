@@ -1,4 +1,4 @@
-namespace EVDMS.BusinessLogicLayer.Dto.Request;
+namespace EVDMS.BusinessLogicLayer.Dto.Request.Vehicle;
 
 public class VehicleQueryRequest : Paging
 {

@@ -1,6 +1,4 @@
-using EVDMS.Core.Model;
-
-namespace EVDMS.BusinessLogicLayer.Dto.Response;
+namespace EVDMS.BusinessLogicLayer.Dto.Response.Dealer;
 
 public class DealerResponse
 {

@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using EVDMS.BusinessLogicLayer.Dto.Request;
+using EVDMS.BusinessLogicLayer.Dto.Request.Vehicle;
 using EVDMS.BusinessLogicLayer.Service.Abstraction;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

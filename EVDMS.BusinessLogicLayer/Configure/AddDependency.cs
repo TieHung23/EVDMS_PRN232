@@ -22,6 +22,7 @@ public static class AddDependency
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IInventoryService, InventoryService>();
         services.AddScoped<IConfigService, ConfigService>();
+        services.AddScoped<IUserService, UserService>();
 
 
         // Add helpers

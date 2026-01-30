@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace EVDMS.BusinessLogicLayer.Dto.Request;
+namespace EVDMS.BusinessLogicLayer.Dto.Request.Config;
 
 public class CreateConfigRequest
 {

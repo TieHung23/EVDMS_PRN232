@@ -1,5 +1,7 @@
 using EVDMS.BusinessLogicLayer.Dto.Response;
+using EVDMS.BusinessLogicLayer.Dto.Response.Dealer;
 using EVDMS.BusinessLogicLayer.Dto.Response.Role;
+using EVDMS.BusinessLogicLayer.Dto.Response.User;
 using EVDMS.Core.Model;
 
 namespace EVDMS.BusinessLogicLayer.Helper;
@@ -43,6 +45,22 @@ public static class Mapper
         return dealers.Select(CreateDealerResponse).ToList();
     }
 
+
+    #endregion
+
+    #region User Mapper
+    public static UserGetDTO GetUserDTO(User user)
+    {
+        var dealerDto = new DealerWithUserDTO(user.Dealer!.Id, user.Dealer.Code, user.Dealer.Name);
+        var roleDto = new RoleWithUserDTO(user.Role!.Id, user.Role.Name);
+
+        var userDto = new UserGetDTO(userId: user.Id, userName: user.UserName, fullName: user.FullName, dealerDetail: dealerDto, roleDetail: roleDto);
+        return userDto;
+    }
+    public static List<UserGetDTO> GetUserDTOList(List<User> users)
+    {
+        return users.Select(GetUserDTO).ToList();
+    }
 
     #endregion
 }

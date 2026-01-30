@@ -1,6 +1,4 @@
-using EVDMS.Core.Model;
-
-namespace EVDMS.BusinessLogicLayer.Dto.Response;
+namespace EVDMS.BusinessLogicLayer.Dto.Response.Vehicle;
 
 public class VehicleResponse
 {
@@ -15,7 +13,7 @@ public class VehicleResponse
     public DateTime CreatedAt { get; set; }
     public DateTime ModifiedAt { get; set; }
 
-    public static VehicleResponse FromEntity(Vehicle vehicle)
+    public static VehicleResponse FromEntity(Core.Model.Vehicle vehicle)
     {
         return new VehicleResponse
         {

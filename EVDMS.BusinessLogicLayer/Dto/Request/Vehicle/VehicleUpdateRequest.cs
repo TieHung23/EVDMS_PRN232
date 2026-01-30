@@ -1,8 +1,8 @@
 using System.Text.Json.Serialization;
 
-namespace EVDMS.BusinessLogicLayer.Dto.Request;
+namespace EVDMS.BusinessLogicLayer.Dto.Request.Vehicle;
 
-public class VehicleCreateRequest
+public class VehicleUpdateRequest
 {
     public string ModelName { get; set; } = string.Empty;
     public string Brand { get; set; } = string.Empty;
@@ -10,5 +10,5 @@ public class VehicleCreateRequest
     public string Description { get; set; } = string.Empty;
     public int ReleaseYear { get; set; }
     [JsonIgnore]
-    public string CreatedBy { get; set; } = string.Empty;
+    public string ModifiedBy { get; set; } = string.Empty;
 }
