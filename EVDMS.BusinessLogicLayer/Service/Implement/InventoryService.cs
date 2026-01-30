@@ -66,4 +66,82 @@ public class InventoryService : IInventoryService
 
         return TResponse<InventoryResponse>.Success(InventoryResponse.FromEntity(inventory));
     }
+
+    public async Task<TResponse<InventoryResponse>> CreateAsync(InventoryCreateRequest request, CancellationToken cancellationToken = default)
+    {
+        var now = DateTime.Now;
+        var inventory = new Inventory
+        {
+            Id = Guid.NewGuid(),
+            DealerId = request.DealerId,
+            VehicleId = request.VehicleId,
+            Quantity = request.Quantity,
+            CreatedAt = now,
+            CreatedAtTick = now.Ticks.ToString(),
+            CreatedBy = request.CreatedBy,
+            ModifiedAt = now,
+            ModifiedAtTick = now.Ticks.ToString(),
+            ModifiedBy = request.CreatedBy,
+            IsActive = true,
+            IsDeleted = false
+        };
+
+        var repository = _unitOfWork.GetRepository<Inventory, Guid>();
+        await repository.AddAsync(inventory);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        // Reload with related entities
+        var created = await repository.GetFirstOrDefaultAsync(
+            filter: i => i.Id == inventory.Id,
+            includeProperties: "Dealer,Vehicle",
+            disableTracking: true,
+            cancellationToken: cancellationToken);
+
+        return TResponse<InventoryResponse>.Success(InventoryResponse.FromEntity(created!));
+    }
+
+    public async Task<TResponse<InventoryResponse>> UpdateAsync(Guid id, InventoryUpdateRequest request, CancellationToken cancellationToken = default)
+    {
+        var repository = _unitOfWork.GetRepository<Inventory, Guid>();
+        var inventory = await repository.GetByIdAsync(id);
+        if (inventory is null)
+        {
+            return TResponse<InventoryResponse>.Failed("Inventory not found.");
+        }
+
+        var now = DateTime.Now;
+        inventory.DealerId = request.DealerId;
+        inventory.VehicleId = request.VehicleId;
+        inventory.Quantity = request.Quantity;
+        inventory.ModifiedAt = now;
+        inventory.ModifiedAtTick = now.Ticks.ToString();
+        inventory.ModifiedBy = request.ModifiedBy;
+
+        repository.Update(inventory);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        // Reload with related entities
+        var updated = await repository.GetFirstOrDefaultAsync(
+            filter: i => i.Id == id,
+            includeProperties: "Dealer,Vehicle",
+            disableTracking: true,
+            cancellationToken: cancellationToken);
+
+        return TResponse<InventoryResponse>.Success(InventoryResponse.FromEntity(updated!));
+    }
+
+    public async Task<Response> DeleteAsync(Guid id, InventoryDeleteRequest request, CancellationToken cancellationToken = default)
+    {
+        var repository = _unitOfWork.GetRepository<Inventory, Guid>();
+        var inventory = await repository.GetByIdAsync(id);
+        if (inventory is null)
+        {
+            return Response.Failed("Inventory not found.");
+        }
+
+        repository.Delete(inventory);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return Response.Success("Inventory deleted successfully.");
+    }
 }
