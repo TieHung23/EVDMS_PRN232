@@ -26,5 +26,6 @@ public partial class ApplicationDbContext : DbContext
     public DbSet<Dealer> Dealers { get; set;  }
     public DbSet<Vehicle> Vehicles { get; set;  }
     public DbSet<Inventory> Inventories { get; set;  }
+    public DbSet<Config> Configs { get; set; }
     public DbSet<Role> Role { get; set; }
 }
