@@ -1,6 +1,5 @@
 using EVDMS.Api.Configure;
 using EVDMS.BusinessLogicLayer.Configure;
-using EVDMS.BusinessLogicLayer.Dto.Response;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.OpenApi;
 
@@ -20,7 +19,6 @@ builder.Services.AddControllers(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    options.OperationFilter<HidePagingParametersOperationFilter>();
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -33,7 +31,6 @@ builder.Services.AddSwaggerGen(options =>
     options.AddSecurityRequirement(document => new OpenApiSecurityRequirement { [new OpenApiSecuritySchemeReference("Bearer", document)] = [] });
 
 });
-builder.Services.AddHttpContextAccessor();
 
 builder.Services.ConfigureAuthentication(builder.Configuration).ConfigureAuthorization();
 builder.Services.AddDataAccessLayer_Wrap(builder.Configuration).AddBusinessLogicLayer().AddOptions(builder.Configuration);
@@ -50,20 +47,6 @@ if (app.Environment.IsDevelopment())
 
     app.Services.CreateScope().AddSeedData();
 }
-app.UseStatusCodePages(async context =>
-{
-    var response = context.HttpContext.Response;
-
-    if (response.StatusCode == StatusCodes.Status404NotFound)
-    {
-        response.ContentType = "application/json";
-
-        var result = Response.Failed("The requested resource was not found.");
-
-        await response.WriteAsJsonAsync(result);
-    }
-});
-
 app.UseAuthentication();
 app.UseAuthorization();
 
