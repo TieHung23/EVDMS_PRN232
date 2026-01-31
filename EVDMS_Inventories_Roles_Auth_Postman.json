@@ -1,0 +1,367 @@
+{
+    "info": {
+        "name": "EVDMS Inventories & Roles & Auth API Tests",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:5000"
+        },
+        {
+            "key": "inventoryId",
+            "value": ""
+        },
+        {
+            "key": "roleId",
+            "value": ""
+        },
+        {
+            "key": "notExistGuid",
+            "value": "99999999-9999-9999-9999-999999999999"
+        }
+    ],
+    "item": [
+        {
+            "name": "Inventories",
+            "item": [
+                {
+                    "name": "Get Inventory By Id - Success",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/api/inventories/{{inventoryId}}"
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status is 200', function() { pm.response.to.have.status(200); });"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Inventory By Id - Fail (Not Found)",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/api/inventories/{{notExistGuid}}"
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status is 404', function() { pm.response.to.have.status(404); });"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Inventory By Id - Invalid GUID",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/api/inventories/bad-guid"
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status is 400', function() { pm.response.to.have.status(400); });"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Inventory List - Basic",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/api/inventories"
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status is 200', function() { pm.response.to.have.status(200); });",
+                                    "pm.test('Has items', function() { pm.expect(pm.response.json().data.items).to.be.an('array'); });"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Inventory List - Paging Page 1",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/api/inventories?pageNumber=1&pageSize=5"
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status is 200', function() { pm.response.to.have.status(200); });",
+                                    "pm.test('PageNumber is 1', function() { pm.expect(pm.response.json().data.pageNumber).to.eql(1); });"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Inventory List - Paging Page 2",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/api/inventories?pageNumber=2&pageSize=5"
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status is 200', function() { pm.response.to.have.status(200); });"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Inventory List - Filter by DealerId",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/api/inventories?dealerId={{dealerId}}"
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status is 200', function() { pm.response.to.have.status(200); });"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Inventory List - Filter by VehicleId",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/api/inventories?vehicleId={{vehicleId}}"
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status is 200', function() { pm.response.to.have.status(200); });"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Inventory List - Filter by MinQuantity",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/api/inventories?minQuantity=10"
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status is 200', function() { pm.response.to.have.status(200); });"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Inventory List - Combined Filter + Paging",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/api/inventories?minQuantity=5&pageNumber=1&pageSize=10"
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status is 200', function() { pm.response.to.have.status(200); });",
+                                    "pm.test('Valid paging', function() { pm.expect(pm.response.json().data.pageSize).to.eql(10); });"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Roles",
+            "item": [
+                {
+                    "name": "Get All Roles - Success",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/api/roles"
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status is 200', function() { pm.response.to.have.status(200); });",
+                                    "pm.test('isSuccess is true', function() { pm.expect(pm.response.json().isSuccess).to.eql(true); });",
+                                    "var jsonData = pm.response.json(); if(jsonData.data && jsonData.data.length > 0) { pm.collectionVariables.set('roleId', jsonData.data[0].id); }"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Role By Id - Success",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/api/roles/{{roleId}}"
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status is 200', function() { pm.response.to.have.status(200); });",
+                                    "pm.test('Has role data', function() { pm.expect(pm.response.json().data).to.have.property('id'); });"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Role By Id - Fail (Not Found)",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/api/roles/{{notExistGuid}}"
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status is 400', function() { pm.response.to.have.status(400); });"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Role By Id - Invalid GUID",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/api/roles/bad-guid"
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status is 400', function() { pm.response.to.have.status(400); });"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Auth",
+            "item": [
+                {
+                    "name": "Login - Success",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{baseUrl}}/api/auth/login",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"Admin@123\"\n}"
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status is 200', function() { pm.response.to.have.status(200); });",
+                                    "pm.test('isSuccess is true', function() { pm.expect(pm.response.json().isSuccess).to.eql(true); });"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Login - Fail (Wrong Password)",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{baseUrl}}/api/auth/login",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"wrongpassword\"\n}"
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status is 401', function() { pm.response.to.have.status(401); });"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Login - Invalid (Empty Body)",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{baseUrl}}/api/auth/login",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{}"
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status is 400 or 401', function() { pm.expect([400, 401]).to.include(pm.response.code); });"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

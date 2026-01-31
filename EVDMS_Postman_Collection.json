@@ -1,0 +1,459 @@
+{
+  "info": {
+    "name": "EVDMS API Test Collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {"key": "baseUrl", "value": "http://localhost:5000"},
+    {"key": "vehicleId", "value": ""},
+    {"key": "dealerId", "value": ""},
+    {"key": "invalidGuid", "value": "00000000-0000-0000-0000-000000000000"},
+    {"key": "notExistGuid", "value": "99999999-9999-9999-9999-999999999999"}
+  ],
+  "item": [
+    {
+      "name": "Vehicles",
+      "item": [
+        {
+          "name": "Create Vehicle - Success",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/vehicles",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"modelName\": \"Camry\",\n  \"brand\": \"Toyota\",\n  \"vehicleType\": \"Sedan\",\n  \"description\": \"A reliable sedan\",\n  \"releaseYear\": 2024,\n  \"createdBy\": \"admin\"\n}"
+            }
+          },
+          "event": [{
+            "listen": "test",
+            "script": {
+              "exec": [
+                "pm.test('Status code is 201', function() {",
+                "  pm.response.to.have.status(201);",
+                "});",
+                "pm.test('Response has isSuccess true', function() {",
+                "  var jsonData = pm.response.json();",
+                "  pm.expect(jsonData.isSuccess).to.eql(true);",
+                "});",
+                "pm.test('Response has vehicle data', function() {",
+                "  var jsonData = pm.response.json();",
+                "  pm.expect(jsonData.data).to.have.property('id');",
+                "  pm.collectionVariables.set('vehicleId', jsonData.data.id);",
+                "});"
+              ]
+            }
+          }]
+        },
+        {
+          "name": "Create Vehicle - Fail (Empty Body)",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/vehicles",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{}"}
+          },
+          "event": [{
+            "listen": "test",
+            "script": {
+              "exec": [
+                "pm.test('Status code is 400', function() {",
+                "  pm.response.to.have.status(400);",
+                "});"
+              ]
+            }
+          }]
+        },
+        {
+          "name": "Create Vehicle - Invalid (Malformed JSON)",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/vehicles",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{invalid json}"}
+          },
+          "event": [{
+            "listen": "test",
+            "script": {
+              "exec": [
+                "pm.test('Status code is 400', function() {",
+                "  pm.response.to.have.status(400);",
+                "});"
+              ]
+            }
+          }]
+        },
+        {
+          "name": "Get Vehicle By Id - Success",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/vehicles/{{vehicleId}}"
+          },
+          "event": [{
+            "listen": "test",
+            "script": {
+              "exec": [
+                "pm.test('Status code is 200', function() {",
+                "  pm.response.to.have.status(200);",
+                "});",
+                "pm.test('Response has isSuccess true', function() {",
+                "  var jsonData = pm.response.json();",
+                "  pm.expect(jsonData.isSuccess).to.eql(true);",
+                "});",
+                "pm.test('Response has vehicle data', function() {",
+                "  var jsonData = pm.response.json();",
+                "  pm.expect(jsonData.data).to.have.property('id');",
+                "  pm.expect(jsonData.data).to.have.property('modelName');",
+                "});"
+              ]
+            }
+          }]
+        },
+        {
+          "name": "Get Vehicle By Id - Fail (Not Found)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/vehicles/{{notExistGuid}}"
+          },
+          "event": [{
+            "listen": "test",
+            "script": {
+              "exec": [
+                "pm.test('Status code is 404', function() {",
+                "  pm.response.to.have.status(404);",
+                "});",
+                "pm.test('Response has isSuccess false', function() {",
+                "  var jsonData = pm.response.json();",
+                "  pm.expect(jsonData.isSuccess).to.eql(false);",
+                "});"
+              ]
+            }
+          }]
+        },
+        {
+          "name": "Get Vehicle By Id - Invalid (Bad GUID)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/vehicles/not-a-valid-guid"
+          },
+          "event": [{
+            "listen": "test",
+            "script": {
+              "exec": [
+                "pm.test('Status code is 400', function() {",
+                "  pm.response.to.have.status(400);",
+                "});"
+              ]
+            }
+          }]
+        },
+        {
+          "name": "Update Vehicle - Success",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/vehicles/{{vehicleId}}",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"modelName\": \"Camry Updated\",\n  \"brand\": \"Toyota\",\n  \"vehicleType\": \"Sedan\",\n  \"description\": \"Updated description\",\n  \"releaseYear\": 2025,\n  \"modifiedBy\": \"admin\"\n}"
+            }
+          },
+          "event": [{
+            "listen": "test",
+            "script": {
+              "exec": [
+                "pm.test('Status code is 200', function() {",
+                "  pm.response.to.have.status(200);",
+                "});",
+                "pm.test('Response has isSuccess true', function() {",
+                "  var jsonData = pm.response.json();",
+                "  pm.expect(jsonData.isSuccess).to.eql(true);",
+                "});",
+                "pm.test('ModelName is updated', function() {",
+                "  var jsonData = pm.response.json();",
+                "  pm.expect(jsonData.data.modelName).to.eql('Camry Updated');",
+                "});"
+              ]
+            }
+          }]
+        },
+        {
+          "name": "Update Vehicle - Fail (Not Found)",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/vehicles/{{notExistGuid}}",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"modelName\": \"Test\",\n  \"brand\": \"Test\",\n  \"vehicleType\": \"Test\",\n  \"description\": \"Test\",\n  \"releaseYear\": 2024,\n  \"modifiedBy\": \"admin\"\n}"
+            }
+          },
+          "event": [{
+            "listen": "test",
+            "script": {
+              "exec": [
+                "pm.test('Status code is 404', function() {",
+                "  pm.response.to.have.status(404);",
+                "});"
+              ]
+            }
+          }]
+        },
+        {
+          "name": "Update Vehicle - Invalid (Bad GUID)",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/vehicles/invalid-guid",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{}"}
+          },
+          "event": [{
+            "listen": "test",
+            "script": {
+              "exec": [
+                "pm.test('Status code is 400', function() {",
+                "  pm.response.to.have.status(400);",
+                "});"
+              ]
+            }
+          }]
+        },
+        {
+          "name": "Get Vehicle List - Basic",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/vehicles"
+          },
+          "event": [{
+            "listen": "test",
+            "script": {
+              "exec": [
+                "pm.test('Status code is 200', function() {",
+                "  pm.response.to.have.status(200);",
+                "});",
+                "pm.test('Response has items array', function() {",
+                "  var jsonData = pm.response.json();",
+                "  pm.expect(jsonData.data.items).to.be.an('array');",
+                "});"
+              ]
+            }
+          }]
+        },
+        {
+          "name": "Get Vehicle List - Paging Page 1",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/vehicles?pageNumber=1&pageSize=5"
+          },
+          "event": [{
+            "listen": "test",
+            "script": {
+              "exec": [
+                "pm.test('Status code is 200', function() {",
+                "  pm.response.to.have.status(200);",
+                "});",
+                "pm.test('PageNumber is 1', function() {",
+                "  var jsonData = pm.response.json();",
+                "  pm.expect(jsonData.data.pageNumber).to.eql(1);",
+                "});",
+                "pm.test('PageSize is 5', function() {",
+                "  var jsonData = pm.response.json();",
+                "  pm.expect(jsonData.data.pageSize).to.eql(5);",
+                "});"
+              ]
+            }
+          }]
+        },
+        {
+          "name": "Get Vehicle List - Paging Page 2",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/vehicles?pageNumber=2&pageSize=5"
+          },
+          "event": [{
+            "listen": "test",
+            "script": {
+              "exec": [
+                "pm.test('Status code is 200', function() {",
+                "  pm.response.to.have.status(200);",
+                "});",
+                "pm.test('PageNumber is 2', function() {",
+                "  var jsonData = pm.response.json();",
+                "  pm.expect(jsonData.data.pageNumber).to.eql(2);",
+                "});"
+              ]
+            }
+          }]
+        },
+        {
+          "name": "Get Vehicle List - Search by ModelName",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/vehicles?modelName=Camry"
+          },
+          "event": [{
+            "listen": "test",
+            "script": {
+              "exec": [
+                "pm.test('Status code is 200', function() {",
+                "  pm.response.to.have.status(200);",
+                "});",
+                "pm.test('All items contain Camry', function() {",
+                "  var jsonData = pm.response.json();",
+                "  jsonData.data.items.forEach(function(item) {",
+                "    pm.expect(item.modelName.toLowerCase()).to.include('camry');",
+                "  });",
+                "});"
+              ]
+            }
+          }]
+        },
+        {
+          "name": "Get Vehicle List - Search by Brand",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/vehicles?brand=Toyota"
+          },
+          "event": [{
+            "listen": "test",
+            "script": {
+              "exec": [
+                "pm.test('Status code is 200', function() {",
+                "  pm.response.to.have.status(200);",
+                "});",
+                "pm.test('All items have Toyota brand', function() {",
+                "  var jsonData = pm.response.json();",
+                "  jsonData.data.items.forEach(function(item) {",
+                "    pm.expect(item.brand.toLowerCase()).to.include('toyota');",
+                "  });",
+                "});"
+              ]
+            }
+          }]
+        },
+        {
+          "name": "Get Vehicle List - Search by VehicleType",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/vehicles?vehicleType=Sedan"
+          },
+          "event": [{
+            "listen": "test",
+            "script": {
+              "exec": [
+                "pm.test('Status code is 200', function() {",
+                "  pm.response.to.have.status(200);",
+                "});"
+              ]
+            }
+          }]
+        },
+        {
+          "name": "Get Vehicle List - Filter by ReleaseYear",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/vehicles?releaseYear=2024"
+          },
+          "event": [{
+            "listen": "test",
+            "script": {
+              "exec": [
+                "pm.test('Status code is 200', function() {",
+                "  pm.response.to.have.status(200);",
+                "});",
+                "pm.test('All items have releaseYear 2024', function() {",
+                "  var jsonData = pm.response.json();",
+                "  jsonData.data.items.forEach(function(item) {",
+                "    pm.expect(item.releaseYear).to.eql(2024);",
+                "  });",
+                "});"
+              ]
+            }
+          }]
+        },
+        {
+          "name": "Get Vehicle List - Combined Search + Paging",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/vehicles?brand=Toyota&pageNumber=1&pageSize=10"
+          },
+          "event": [{
+            "listen": "test",
+            "script": {
+              "exec": [
+                "pm.test('Status code is 200', function() {",
+                "  pm.response.to.have.status(200);",
+                "});",
+                "pm.test('Response has valid paging', function() {",
+                "  var jsonData = pm.response.json();",
+                "  pm.expect(jsonData.data.pageNumber).to.eql(1);",
+                "  pm.expect(jsonData.data.pageSize).to.eql(10);",
+                "});"
+              ]
+            }
+          }]
+        },
+        {
+          "name": "Delete Vehicle - Success",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/vehicles/{{vehicleId}}",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"modifiedBy\": \"admin\"\n}"
+            }
+          },
+          "event": [{
+            "listen": "test",
+            "script": {
+              "exec": [
+                "pm.test('Status code is 204', function() {",
+                "  pm.response.to.have.status(204);",
+                "});"
+              ]
+            }
+          }]
+        },
+        {
+          "name": "Delete Vehicle - Fail (Not Found)",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/vehicles/{{notExistGuid}}",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\"modifiedBy\": \"admin\"}"}
+          },
+          "event": [{
+            "listen": "test",
+            "script": {
+              "exec": [
+                "pm.test('Status code is 404', function() {",
+                "  pm.response.to.have.status(404);",
+                "});"
+              ]
+            }
+          }]
+        },
+        {
+          "name": "Delete Vehicle - Invalid (Bad GUID)",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/vehicles/invalid-guid",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{}"}
+          },
+          "event": [{
+            "listen": "test",
+            "script": {
+              "exec": [
+                "pm.test('Status code is 400', function() {",
+                "  pm.response.to.have.status(400);",
+                "});"
+              ]
+            }
+          }]
+        }
+      ]
+    }
+  ]
+}

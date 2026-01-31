@@ -24,10 +24,15 @@ public class VehiclesController : ControllerBase
         return Ok(result);
     }
 
-    [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(string id, CancellationToken cancellationToken)
     {
-        var result = await _vehicleService.GetByIdAsync(id, cancellationToken);
+        if (!Guid.TryParse(id, out var guidId))
+        {
+            return BadRequest(new { message = "Invalid GUID format.", field = "id" });
+        }
+
+        var result = await _vehicleService.GetByIdAsync(guidId, cancellationToken);
         if (result.IsFailed) return NotFound(result);
 
         return Ok(result);
@@ -42,21 +47,32 @@ public class VehiclesController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = result.Data?.Id }, result);
     }
 
-    [HttpPut("{id:guid}")]
-    public async Task<IActionResult> Update(Guid id, [FromBody] VehicleUpdateRequest request, CancellationToken cancellationToken)
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(string id, [FromBody] VehicleUpdateRequest request, CancellationToken cancellationToken)
     {
-        var result = await _vehicleService.UpdateAsync(id, request, cancellationToken);
+        if (!Guid.TryParse(id, out var guidId))
+        {
+            return BadRequest(new { message = "Invalid GUID format.", field = "id" });
+        }
+
+        var result = await _vehicleService.UpdateAsync(guidId, request, cancellationToken);
         if (result.IsFailed) return NotFound(result);
 
         return Ok(result);
     }
 
-    [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> Delete(Guid id, [FromBody] VehicleDeleteRequest request, CancellationToken cancellationToken)
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(string id, [FromBody] VehicleDeleteRequest request, CancellationToken cancellationToken)
     {
-        var result = await _vehicleService.DeleteAsync(id, request, cancellationToken);
+        if (!Guid.TryParse(id, out var guidId))
+        {
+            return BadRequest(new { message = "Invalid GUID format.", field = "id" });
+        }
+
+        var result = await _vehicleService.DeleteAsync(guidId, request, cancellationToken);
         if (result.IsFailed) return NotFound(result);
 
         return NoContent();
     }
 }
+

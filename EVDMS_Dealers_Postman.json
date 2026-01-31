@@ -1,0 +1,443 @@
+{
+    "info": {
+        "name": "EVDMS Dealers API Tests",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:5000"
+        },
+        {
+            "key": "dealerId",
+            "value": ""
+        },
+        {
+            "key": "notExistGuid",
+            "value": "99999999-9999-9999-9999-999999999999"
+        }
+    ],
+    "item": [
+        {
+            "name": "Create Dealer - Success",
+            "request": {
+                "method": "POST",
+                "url": "{{baseUrl}}/api/dealers",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"code\": \"DL001\",\n  \"name\": \"Toyota Hanoi\",\n  \"email\": \"hanoi@toyota.vn\",\n  \"createdBy\": \"admin\"\n}"
+                }
+            },
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('Status code is 201', function() { pm.response.to.have.status(201); });",
+                            "pm.test('Response has isSuccess true', function() { pm.expect(pm.response.json().isSuccess).to.eql(true); });",
+                            "pm.test('Save dealerId', function() { pm.collectionVariables.set('dealerId', pm.response.json().data.id); });"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Create Dealer - Fail (Empty Body)",
+            "request": {
+                "method": "POST",
+                "url": "{{baseUrl}}/api/dealers",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{}"
+                }
+            },
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('Status code is 400', function() { pm.response.to.have.status(400); });"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Create Dealer - Invalid JSON",
+            "request": {
+                "method": "POST",
+                "url": "{{baseUrl}}/api/dealers",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{invalid}"
+                }
+            },
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('Status code is 400', function() { pm.response.to.have.status(400); });"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Get Dealer By Id - Success",
+            "request": {
+                "method": "GET",
+                "url": "{{baseUrl}}/api/dealers/{{dealerId}}"
+            },
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('Status code is 200', function() { pm.response.to.have.status(200); });",
+                            "pm.test('Response has dealer data', function() { pm.expect(pm.response.json().data).to.have.property('id'); });"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Get Dealer By Id - Fail (Not Found)",
+            "request": {
+                "method": "GET",
+                "url": "{{baseUrl}}/api/dealers/{{notExistGuid}}"
+            },
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('Status code is 404', function() { pm.response.to.have.status(404); });"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Get Dealer By Id - Invalid GUID",
+            "request": {
+                "method": "GET",
+                "url": "{{baseUrl}}/api/dealers/invalid-guid"
+            },
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('Status code is 400', function() { pm.response.to.have.status(400); });"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Update Dealer - Success",
+            "request": {
+                "method": "PUT",
+                "url": "{{baseUrl}}/api/dealers/{{dealerId}}",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"code\": \"DL001-UPD\",\n  \"name\": \"Toyota Hanoi Updated\",\n  \"email\": \"hanoi.updated@toyota.vn\",\n  \"modifiedBy\": \"admin\"\n}"
+                }
+            },
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('Status code is 200', function() { pm.response.to.have.status(200); });",
+                            "pm.test('Name is updated', function() { pm.expect(pm.response.json().data.name).to.include('Updated'); });"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Update Dealer - Fail (Not Found)",
+            "request": {
+                "method": "PUT",
+                "url": "{{baseUrl}}/api/dealers/{{notExistGuid}}",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\"code\":\"X\",\"name\":\"X\",\"email\":\"x@x.com\",\"modifiedBy\":\"admin\"}"
+                }
+            },
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('Status is 404', function() { pm.response.to.have.status(404); });"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Update Dealer - Invalid GUID",
+            "request": {
+                "method": "PUT",
+                "url": "{{baseUrl}}/api/dealers/bad-guid",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{}"
+                }
+            },
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('Status is 400', function() { pm.response.to.have.status(400); });"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Get Dealer List - Basic",
+            "request": {
+                "method": "GET",
+                "url": "{{baseUrl}}/api/dealers"
+            },
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('Status is 200', function() { pm.response.to.have.status(200); });",
+                            "pm.test('Has items', function() { pm.expect(pm.response.json().data.items).to.be.an('array'); });"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Get Dealer List - Paging Page 1",
+            "request": {
+                "method": "GET",
+                "url": "{{baseUrl}}/api/dealers?pageNumber=1&pageSize=5"
+            },
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('Status is 200', function() { pm.response.to.have.status(200); });",
+                            "pm.test('PageNumber is 1', function() { pm.expect(pm.response.json().data.pageNumber).to.eql(1); });"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Get Dealer List - Paging Page 2",
+            "request": {
+                "method": "GET",
+                "url": "{{baseUrl}}/api/dealers?pageNumber=2&pageSize=5"
+            },
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('Status is 200', function() { pm.response.to.have.status(200); });",
+                            "pm.test('PageNumber is 2', function() { pm.expect(pm.response.json().data.pageNumber).to.eql(2); });"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Get Dealer List - Filter by Name",
+            "request": {
+                "method": "GET",
+                "url": "{{baseUrl}}/api/dealers?name=Toyota"
+            },
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('Status is 200', function() { pm.response.to.have.status(200); });"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Get Dealer List - Filter by Code",
+            "request": {
+                "method": "GET",
+                "url": "{{baseUrl}}/api/dealers?code=DL"
+            },
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('Status is 200', function() { pm.response.to.have.status(200); });"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Get Dealer List - Filter by Email",
+            "request": {
+                "method": "GET",
+                "url": "{{baseUrl}}/api/dealers?email=toyota"
+            },
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('Status is 200', function() { pm.response.to.have.status(200); });"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Get Dealer List - Combined Filter + Paging",
+            "request": {
+                "method": "GET",
+                "url": "{{baseUrl}}/api/dealers?name=Toyota&pageNumber=1&pageSize=10"
+            },
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('Status is 200', function() { pm.response.to.have.status(200); });",
+                            "pm.test('Valid paging', function() { pm.expect(pm.response.json().data.pageSize).to.eql(10); });"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Delete Dealer - Success",
+            "request": {
+                "method": "DELETE",
+                "url": "{{baseUrl}}/api/dealers/{{dealerId}}",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\"modifiedBy\": \"admin\"}"
+                }
+            },
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('Status is 204', function() { pm.response.to.have.status(204); });"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Delete Dealer - Fail (Not Found)",
+            "request": {
+                "method": "DELETE",
+                "url": "{{baseUrl}}/api/dealers/{{notExistGuid}}",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\"modifiedBy\": \"admin\"}"
+                }
+            },
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('Status is 404', function() { pm.response.to.have.status(404); });"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Delete Dealer - Invalid GUID",
+            "request": {
+                "method": "DELETE",
+                "url": "{{baseUrl}}/api/dealers/bad-guid",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{}"
+                }
+            },
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('Status is 400', function() { pm.response.to.have.status(400); });"
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+}

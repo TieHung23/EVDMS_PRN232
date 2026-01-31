@@ -69,17 +69,17 @@ public class VehicleService : IVehicleService
         var vehicle = new Vehicle
         {
             Id = Guid.NewGuid(),
-            ModelName = request.ModelName,
-            Brand = request.Brand,
-            VehicleType = request.VehicleType,
+            ModelName = request.ModelName!,
+            Brand = request.Brand!,
+            VehicleType = request.VehicleType!,
             Description = request.Description,
             ReleaseYear = request.ReleaseYear,
             CreatedAt = now,
             CreatedAtTick = now.Ticks.ToString(),
-            CreatedBy = request.CreatedBy,
+            CreatedBy = request.CreatedBy!,
             ModifiedAt = now,
             ModifiedAtTick = now.Ticks.ToString(),
-            ModifiedBy = request.CreatedBy,
+            ModifiedBy = request.CreatedBy!,
             IsActive = true,
             IsDeleted = false
         };
@@ -100,9 +100,9 @@ public class VehicleService : IVehicleService
             return TResponse<VehicleResponse>.Failed("Vehicle not found.");
         }
 
-        vehicle.ModelName = request.ModelName;
-        vehicle.Brand = request.Brand;
-        vehicle.VehicleType = request.VehicleType;
+        vehicle.ModelName = request.ModelName!;
+        vehicle.Brand = request.Brand!;
+        vehicle.VehicleType = request.VehicleType!;
         vehicle.Description = request.Description;
         vehicle.ReleaseYear = request.ReleaseYear;
         repository.Update(vehicle);
