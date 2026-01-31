@@ -66,6 +66,13 @@ public class VehicleService : IVehicleService
 
     public async Task<TResponse<VehicleResponse>> CreateAsync(VehicleCreateRequest request, CancellationToken cancellationToken = default)
     {
+        if(string.IsNullOrEmpty(request.ModelName)
+           || string.IsNullOrEmpty(request.Brand)
+           || string.IsNullOrEmpty(request.VehicleType)
+           || request.ReleaseYear <= 0)
+        {
+            return TResponse<VehicleResponse>.Failed("Invalid vehicle data.");
+        }
         var now = DateTime.Now;
         var vehicle = new Vehicle
         {
